@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for pg-mana on 2026-10-31T23:24:15Z
+# fly.toml app configuration file generated for pg-mana on 2026-10-31T23:33:03Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'pg-mana'
-primary_region = 'ams'
+primary_region = 'iad'
 
 [build]
 
@@ -20,4 +20,4 @@ primary_region = 'ams'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 256
+  memory_mb =256
