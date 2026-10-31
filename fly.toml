@@ -3,10 +3,8 @@ primary_region = "iad"
 
 [env]
   PORT = "8080"
-  DEMO_MODE = "true"
-  REQUIRE_STRIPE = "false"
-  API_KEY_PREFIX = "mana_live_"
-  MAX_DEMO_POINTS = "100000"
+  DEMO_MODE = "false"
+  REQUIRE_STRIPE = "true"
 
 [http_service]
   internal_port = 8080
