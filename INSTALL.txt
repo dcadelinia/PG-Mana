@@ -1,0 +1,25 @@
+DROP-IN FIX FOR FLY.IO
+======================
+
+1. Unzip this archive INTO your existing project folder
+   (overwrite when asked):
+
+   unzip -o PG-Mana-DROPIN.zip -d /path/to/your/pg-mana-project
+
+2. Verify the Dockerfile is correct:
+
+   head -3 Dockerfile
+   # MUST show:
+   # FROM python:3.12-slim AS builder
+
+3. Deploy with a local build (ignore GitHub):
+
+   flyctl deploy --local-only -a pg-mana
+
+   or:
+
+   flyctl deploy . -a pg-mana --no-cache
+
+If you still see "nvcr.io/nvidia/modulus", Fly is still
+pulling from GitHub. In that case push these files to the
+repo first, then deploy again.
