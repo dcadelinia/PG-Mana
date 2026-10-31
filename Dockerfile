@@ -26,9 +26,8 @@ ENV PYTHONUNBUFFERED=1
 # Copy application assets
 COPY main.py .
 COPY index.html .
-COPY .env* ./
 
-# Fly.io injects PORT automatically, fallback to 8080
 EXPOSE 8080
 
-CMD ["python", "main.py"]
+# Hardcoded production entrypoint to ensure Fly-proxy connectivity
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
