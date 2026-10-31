@@ -5,6 +5,9 @@ from fastapi import FastAPI, HTTPException, Header
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
+# Import billing router module
+import checkout
+
 # Load configuration from environment variables
 DEMO_MODE = os.getenv("DEMO_MODE", "true").lower() == "true"
 REQUIRE_STRIPE = os.getenv("REQUIRE_STRIPE", "false").lower() == "true"
@@ -18,13 +21,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Request schema matching README specifications
+# Mount the payment and checkout endpoints seamlessly
+app.include_router(checkout.router)
+
 class SimulationRequest(BaseModel):
     tenant_id: str = Field(..., example="DEMO-PUBLIC-001")
     points_count: int = Field(..., example=50000)
     target_accuracy_delta: float = Field(..., example=0.0001)
 
-# Root route: Serves the static landing page / playground
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     try:
@@ -41,10 +45,8 @@ async def read_root():
         </html>
         """
 
-# Health profile route
 @app.get("/health")
 async def health_check():
-    # Detect mock hardware profiles as described in architecture notes
     has_nvidia = False
     try:
         import subprocess
@@ -61,7 +63,6 @@ async def health_check():
         "timestamp": time.time()
     }
 
-# Ready-to-use payload examples
 @app.get("/v1/examples")
 async def get_examples():
     return {
@@ -72,7 +73,6 @@ async def get_examples():
         }
     }
 
-# Core PINN inference endpoint
 @app.post("/v1/simulate/aerodynamics")
 async def simulate_aerodynamics(
     payload: SimulationRequest,
@@ -80,20 +80,16 @@ async def simulate_aerodynamics(
 ):
     start_time = time.time()
 
-    # Authenticate unless DEMO_MODE is true
     if not DEMO_MODE:
         if not x_odynex_mana_key or not x_odynex_mana_key.startswith(API_KEY_PREFIX):
             raise HTTPException(status_code=401, detail="Invalid or missing X-Odynex-Mana-Key API key.")
 
-    # Apply playground caps
     if DEMO_MODE and payload.points_count > MAX_DEMO_POINTS:
         raise HTTPException(
             status_code=400, 
             detail=f"Points count exceeds anonymous maximum of {MAX_DEMO_POINTS}."
         )
 
-    # Simulated PINN surrogate math model for Desert Rose pod mechanics
-    # Replaces heavy Navier-Stokes execution instantly
     efficiency_factor = 0.842 + (0.015 * (payload.points_count % 5))
     lift_to_drag = round(2.45 + (0.001 * (payload.points_count / 10000)), 4)
     latency_ms = round((time.time() - start_time) * 1000, 2)
@@ -118,9 +114,4 @@ async def simulate_aerodynamics(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=PORT,reload=True)
-# Add this import to the top of main.py
-import checkout
-
-# Add this line right after your app = FastAPI(...) instantiation
-app.include_router(checkout.router)
+    uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)
