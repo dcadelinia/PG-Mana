@@ -1,0 +1,12 @@
+# --- PG Mana Core Hardware/ML Requirements ---
+torch>=2.4.0
+modulus>=24.04
+warp-lang>=1.0.0
+numpy>=1.26.0
+
+# --- Cloud Infrastructure & Enterprise Telemetry Wrapper ---
+fastapi>=0.111.0
+uvicorn>=0.30.0
+stripe>=9.0.0
+psutil>=5.9.0
+pydantic>=2.7.0
