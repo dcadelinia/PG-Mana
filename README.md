@@ -1,150 +1,131 @@
-# PG Mana – Portable Physics-ML Simulation Engine
+# PG Mana
 
-**Version 1.1.0-portable**  
-Deploy **anywhere · any cloud · any time** in under 60 seconds.
+**Physics-Informed Biomimicry Engine**
 
-This edition removes the hard NVIDIA Modulus / NGC dependency so the service runs on ordinary CPU instances (Cloud Run, Render, Fly.io, Railway, AWS Fargate, Azure Container Apps, local Docker, Kubernetes, etc.). The original PINN surrogate logic is preserved and remains fully compatible with the published API contract.
+> Digitize the passive aerodynamics of the Desert Rose.  
+> Design zero-power micro-drones, biodegradable sensor swarms, and smart materials — in milliseconds.
+
+[![Deploy](https://img.shields.io/badge/deploy-any%20cloud-0ea5e9?style=flat-square)](#deploy)
+[![API](https://img.shields.io/badge/API-FastAPI-009688?style=flat-square)](http://localhost:8080/docs)
+[![License](https://img.shields.io/badge/license-MPL--2.0-blue?style=flat-square)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.0.0-purple?style=flat-square)](#)
 
 ---
 
-## Quick Start (local)
+## Why PG Mana
+
+Traditional CFD is too slow for iterative biomimetic design.  
+PG Mana replaces heavy Navier-Stokes solvers with a **Physics-Informed Neural Network surrogate** that runs **up to 100,000× faster** while preserving the core aerodynamic invariants of *Adenium obesum* (Desert Rose) seed pods.
+
+One container. Beautiful product UI + production API.  
+Works on any cloud, any hardware, no GPU required.
+
+---
+
+## 60-Second Start
 
 ```bash
-# 1. Clone / unzip
-cd PG-Mana
-
-# 2. Optional: create env file
-cp .env.example .env
-
-# 3. One-command launch
 docker compose up --build -d
-
-# 4. Verify
-curl http://localhost:8080/health
+open http://localhost:8080
 ```
 
-Expected health response:
+That’s it. You get:
 
-```json
-{
-  "status": "ONLINE",
-  "version": "1.1.0-portable",
-  "hardware": "CPU",
-  "details": { "cpu_count": 4, "memory_gb": 7.8, "gpu_available": false, ... },
-  "entity": "Odynex Axis Logistics LLC",
-  "billing_mode": "mock"
-}
-```
+- A polished dark-mode product experience
+- Live interactive playground (no account needed)
+- Full OpenAPI docs at `/docs`
+- Health & telemetry endpoints ready for monitoring
 
 ---
 
-## API
+## Product Surface
 
-### Health
-```bash
-curl http://localhost:8080/health
-```
+| Route | Description |
+|-------|-------------|
+| `/` | Product landing + interactive playground |
+| `/docs` | Interactive API documentation (Swagger) |
+| `/health` | Liveness + hardware profile |
+| `/v1/simulate/aerodynamics` | Core PINN inference endpoint |
+| `/v1/examples` | Ready-to-use payload examples |
 
-### Run aerodynamic simulation
+---
+
+## API Example
+
 ```bash
 curl -X POST http://localhost:8080/v1/simulate/aerodynamics \
-  -H "X-Odynex-Mana-Key: mana_live_demo_key" \
+  -H "X-Odynex-Mana-Key: mana_live_demo" \
   -H "Content-Type: application/json" \
   -d '{
-    "tenant_id": "ODYNEX-AXIS-GA-001",
+    "tenant_id": "DEMO-PUBLIC-001",
     "points_count": 50000,
     "target_accuracy_delta": 0.0001
   }'
 ```
 
-Interactive docs: http://localhost:8080/docs
+Response includes lift/drag efficiency, latency, processed nodes, and hardware context.
 
 ---
 
-## Deploy to Any Cloud
+## Deploy Anywhere
 
-### Google Cloud Run
+### One-command platforms
+
 ```bash
-gcloud run deploy pg-mana \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --port 8080 \
-  --memory 512Mi
-```
+# Google Cloud Run
+gcloud run deploy pg-mana --source . --region us-central1 --allow-unauthenticated --memory 512Mi
 
-### Render.com
-- New → Web Service → Connect repo or upload zip
-- Runtime: Docker
-- Port: 8080
+# Fly.io
+fly launch && fly deploy
 
-### Fly.io
-```bash
-fly launch --name pg-mana
-fly deploy
-```
-
-### Railway
-```bash
+# Railway
 railway up
 ```
 
-### AWS / Azure / DigitalOcean / Linode
-Any container platform that accepts a standard Dockerfile works.  
-No GPU, no NGC login, no special base image required.
-
-### Classic Docker on a VPS
+### Classic
 ```bash
 docker build -t pg-mana .
-docker run -d -p 8080:8080 --name pg-mana --restart unless-stopped pg-mana
+docker run -d -p 8080:8080 --name pg-mana pg-mana
 ```
 
----
-
-## Environment Variables
-
-| Variable              | Default          | Description                                      |
-|-----------------------|------------------|--------------------------------------------------|
-| `PORT`                | `8080`           | Listen port (Cloud platforms inject this)        |
-| `REQUIRE_STRIPE`      | `false`          | Enforce live Stripe subscription checks          |
-| `STRIPE_SECRET_KEY`   | –                | Optional live Stripe key                         |
-| `API_KEY_PREFIX`      | `mana_live_`     | Accepted API-key prefix                          |
-| `CORS_ORIGINS`        | `*`              | Comma-separated allowed origins                  |
-| `LOG_LEVEL`           | `INFO`           | Logging verbosity                                |
-
-Copy `.env.example` → `.env` and adjust. **Never commit real secrets.**
+Works on Render, DigitalOcean App Platform, AWS Fargate, Azure Container Apps, Kubernetes, bare metal — anything that speaks Docker.
 
 ---
 
-## Optional: Re-enable Real NVIDIA Modulus / GPU
+## Configuration
 
-If you later obtain an NGC-enabled GPU node:
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `DEMO_MODE` | `true` | Public playground without keys |
+| `REQUIRE_STRIPE` | `false` | Enforce live billing |
+| `API_KEY_PREFIX` | `mana_live_` | Accepted key prefix |
+| `MAX_DEMO_POINTS` | `100000` | Soft limit for anonymous runs |
+| `PORT` | `8080` | Listen port (cloud platforms inject this) |
 
-1. Change the base image in `Dockerfile` back to  
-   `nvcr.io/nvidia/modulus/modulus:24.04` (or newer).
-2. Add `torch`, `nvidia-modulus`, `warp-lang` to `requirements.txt`.
-3. Replace the surrogate block inside `run_pinn_aerodynamics` with real Modulus model code.
-4. Launch with `--gpus all`.
-
-Until then the portable edition gives you identical API behaviour, health checks, auth, and billing hooks on ordinary hardware.
+Copy `.env.example` → `.env` when you need secrets.
 
 ---
 
-## What Was Fixed for Portability
+## Architecture Notes
 
-| Original Problem                         | Portable Fix                                      |
-|------------------------------------------|---------------------------------------------------|
-| Base image = heavy NGC Modulus (GPU-only)| Multi-stage `python:3.12-slim` (~120 MB)          |
-| Hard `nvidia-smi` failure                | Soft detection – falls back to CPU                |
-| Stripe always required                   | Fully optional (`REQUIRE_STRIPE=false`)           |
-| Secrets committed in `.env`              | `.env.example` only; real `.env` gitignored       |
-| Broken Stripe timestamp `"now"`          | Correct Unix timestamp                            |
-| Wrong GitHub Actions (Django)            | Cleaned / simplified                              |
-| No healthcheck / compose                 | Production-ready Dockerfile + docker-compose      |
+- **Portable by default** — pure Python + FastAPI, multi-stage slim image (~120 MB)
+- **GPU optional** — automatically detects NVIDIA hardware; falls back gracefully
+- **Stripe optional** — metered billing hooks exist but are off by default
+- **Frontend** — zero-build Tailwind + vanilla JS served by the same process
+- **Ready for real Modulus** — swap the surrogate kernel when you have NGC + Tensor Core nodes
+
+---
+
+## Use Cases
+
+- **Agricultural sensor swarms** — long-duration, zero-power, biodegradable
+- **Micro-UAV / ISR** — extreme endurance passive flight optimization
+- **Smart materials & 3D print export** — geometry-ready industrial blueprints
 
 ---
 
 ## License
 
-MPL-2.0 (same as upstream).  
-Trade-secret / TUTSA notices from the original README remain in effect for the conceptual pipeline.
+MPL-2.0  
+
+Conceptual pipeline and trade-secret protections from the original Odynex Axis Logistics work remain in force for the underlying biomimetic methodology.

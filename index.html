@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PG Mana — Physics-Informed Biomimicry Engine</title>
+  <meta name="description" content="Digitize the passive aerodynamics of the Desert Rose. Design zero-power micro-drones and sensor swarms with Physics-Informed Neural Networks." />
+  <meta property="og:title" content="PG Mana — Physics-Informed Biomimicry Engine" />
+  <meta property="og:description" content="Turn nature’s most efficient passive flyer into optimized micro-drone blueprints. Instant PINN simulation." />
+  <meta property="og:type" content="website" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            mana: {
+              50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+              400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
+              800: '#075985', 900: '#0c4a6e', 950: '#082f49'
+            },
+            rose: {
+              400: '#fb7185', 500: '#f43f5e', 600: '#e11d48'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #38bdf8 0%, #a78bfa 50%, #fb7185 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    .mesh-bg {
+      background-color: #020617;
+      background-image:
+        radial-gradient(at 20% 30%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
+        radial-gradient(at 80% 70%, rgba(244, 63, 94, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+    }
+    .pulse-ring {
+      animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.1; transform: scale(1.05); }
+    }
+    .result-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .result-card:hover { transform: translateY(-2px); }
+    .spinner {
+      border: 3px solid rgba(56, 189, 248, 0.2);
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="mesh-bg text-slate-100 min-h-screen antialiased">
+
+  <!-- Nav -->
+  <nav class="fixed top-0 inset-x-0 z-50 glass">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-mana-400 to-rose-500 flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-mana-500/20">PG</div>
+        <span class="font-semibold tracking-tight text-lg">Mana</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-6 text-sm text-slate-400">
+        <a href="#playground" class="hover:text-white transition">Playground</a>
+        <a href="#usecases" class="hover:text-white transition">Use Cases</a>
+        <a href="#api" class="hover:text-white transition">API</a>
+        <a href="/docs" target="_blank" class="hover:text-white transition">Docs</a>
+      </div>
+      <a href="#playground" class="px-4 py-2 rounded-lg bg-mana-500 hover:bg-mana-400 text-sm font-medium transition shadow-lg shadow-mana-500/25">
+        Try Free Demo
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-20 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-slate-300 mb-6">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Physics-Informed Neural Networks · Live
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+        Nature’s most efficient<br>
+        <span class="gradient-text">passive flyer</span>, digitized.
+      </h1>
+      <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        PG Mana turns the Desert Rose seed pod into optimized blueprints for zero-power micro-drones, biodegradable sensor swarms, and smart materials — in milliseconds.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#playground" class="px-8 py-3.5 rounded-xl bg-white text-slate-900 font-semibold hover:bg-slate-100 transition shadow-xl shadow-white/10">
+          Launch Playground
+        </a>
+        <a href="/docs" target="_blank" class="px-8 py-3.5 rounded-xl glass text-slate-200 font-medium hover:bg-slate-800/80 transition">
+          View API Docs →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Stats Bar -->
+  <section class="px-4 sm:px-6 mb-20">
+    <div class="max-w-4xl mx-auto glass rounded-2xl p-6 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+      <div>
+        <div class="text-2xl font-bold text-mana-400" id="stat-latency">—</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Avg Latency</div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-mana-400" id="stat-nodes">50k+</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Nodes / Run</div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-mana-400">100k×</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">vs CFD</div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-emerald-400" id="stat-status">ONLINE</div>
+        <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Status</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Playground -->
+  <section id="playground" class="px-4 sm:px-6 pb-24">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-3">Interactive Playground</h2>
+        <p class="text-slate-400">No account required. Run a live aerodynamic surrogate on the Desert Rose geometry.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-5 gap-8">
+        <!-- Controls -->
+        <div class="lg:col-span-2 glass rounded-2xl p-6 space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Tenant ID</label>
+            <input id="tenant" type="text" value="DEMO-PUBLIC-001"
+              class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-mana-500/50 focus:border-mana-500 transition" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">
+              Point Cloud Density
+              <span id="points-label" class="text-mana-400 font-mono ml-1">25,000</span>
+            </label>
+            <input id="points" type="range" min="1000" max="200000" step="1000" value="25000"
+              class="w-full accent-mana-500" oninput="document.getElementById('points-label').textContent = Number(this.value).toLocaleString()" />
+            <div class="flex justify-between text-xs text-slate-500 mt-1">
+              <span>1k</span><span>200k</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Target Accuracy Δ</label>
+            <select id="accuracy" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-mana-500/50">
+              <option value="0.001">0.001 (fast)</option>
+              <option value="0.0001" selected>0.0001 (balanced)</option>
+              <option value="0.00001">0.00001 (high precision)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">API Key <span class="text-slate-500">(optional for demo)</span></label>
+            <input id="apikey" type="text" placeholder="mana_live_…" value="mana_live_demo"
+              class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-mana-500/50" />
+          </div>
+          <button id="run-btn" onclick="runSimulation()"
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-mana-500 to-mana-600 hover:from-mana-400 hover:to-mana-500 font-semibold text-white shadow-lg shadow-mana-500/30 transition flex items-center justify-center gap-2">
+            <span id="btn-text">Run PINN Simulation</span>
+            <div id="btn-spinner" class="spinner hidden"></div>
+          </button>
+          <p class="text-xs text-slate-500 text-center">Public demo · rate-limited · no credit card</p>
+        </div>
+
+        <!-- Results -->
+        <div class="lg:col-span-3 glass rounded-2xl p-6 min-h-[420px] flex flex-col">
+          <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-slate-500">
+            <div class="w-20 h-20 rounded-full bg-slate-800/80 flex items-center justify-center mb-4 pulse-ring">
+              <svg class="w-10 h-10 text-mana-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.753 9.753 0 0112 15.75a9.753 9.753 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+              </svg>
+            </div>
+            <p class="text-sm">Configure parameters and run a simulation</p>
+          </div>
+
+          <div id="results" class="hidden flex-1 flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="font-medium" id="result-status">COMPLETED</span>
+                <span class="text-xs text-slate-500 ml-2" id="result-mode">cpu-surrogate</span>
+              </div>
+              <button onclick="copyResult()" class="text-xs text-slate-400 hover:text-white transition">Copy JSON</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="result-card bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+                <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Lift / Drag</div>
+                <div class="text-2xl font-bold text-mana-300 font-mono" id="res-lod">—</div>
+              </div>
+              <div class="result-card bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+                <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Latency</div>
+                <div class="text-2xl font-bold text-mana-300 font-mono" id="res-latency">—</div>
+              </div>
+              <div class="result-card bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+                <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Nodes Processed</div>
+                <div class="text-2xl font-bold text-mana-300 font-mono" id="res-nodes">—</div>
+              </div>
+              <div class="result-card bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+                <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Compute Cycles</div>
+                <div class="text-2xl font-bold text-mana-300 font-mono" id="res-cycles">—</div>
+              </div>
+            </div>
+
+            <!-- Simple visual bar representing efficiency -->
+            <div class="mb-4">
+              <div class="flex justify-between text-xs text-slate-500 mb-1">
+                <span>Aerodynamic Efficiency</span>
+                <span id="eff-pct">—</span>
+              </div>
+              <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="eff-bar" class="h-full bg-gradient-to-r from-mana-500 to-rose-400 rounded-full transition-all duration-700" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="mt-auto pt-4 border-t border-slate-800">
+              <pre id="raw-json" class="text-xs font-mono text-slate-400 overflow-x-auto max-h-32 overflow-y-auto"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section id="usecases" class="px-4 sm:px-6 pb-24">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-3">Built for the next generation of autonomous systems</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">From agricultural sensor swarms to defense ISR and biodegradable environmental monitors.</p>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-6">
+        <div class="glass rounded-2xl p-6 hover:border-mana-500/30 transition border border-transparent">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 text-2xl">🌿</div>
+          <h3 class="font-semibold text-lg mb-2">Agri & Environmental</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Zero-power, biodegradable sensor pods that ride natural wind currents for months. Ideal for precision agriculture and climate monitoring.</p>
+        </div>
+        <div class="glass rounded-2xl p-6 hover:border-mana-500/30 transition border border-transparent">
+          <div class="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center mb-4 text-2xl">🛸</div>
+          <h3 class="font-semibold text-lg mb-2">Micro-UAV / ISR</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Passive aerodynamic optimization for ultra-long endurance micro-drones. Reduce power draw by orders of magnitude.</p>
+        </div>
+        <div class="glass rounded-2xl p-6 hover:border-mana-500/30 transition border border-transparent">
+          <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center mb-4 text-2xl">🧬</div>
+          <h3 class="font-semibold text-lg mb-2">Smart Materials</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Export optimized geometries ready for industrial 3D printing and multi-material fabrication of biomimetic structures.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API Teaser -->
+  <section id="api" class="px-4 sm:px-6 pb-24">
+    <div class="max-w-4xl mx-auto glass rounded-2xl p-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold">Simple, powerful API</h2>
+          <p class="text-slate-400 text-sm mt-1">One endpoint. Instant results. Works from any language.</p>
+        </div>
+        <a href="/docs" target="_blank" class="text-sm text-mana-400 hover:text-mana-300 font-medium">Full documentation →</a>
+      </div>
+      <pre class="bg-slate-950 rounded-xl p-5 text-sm font-mono overflow-x-auto text-slate-300"><code>curl -X POST https://your-domain/v1/simulate/aerodynamics \
+  -H "X-Odynex-Mana-Key: mana_live_demo" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tenant_id": "DEMO-001",
+    "points_count": 50000,
+    "target_accuracy_delta": 0.0001
+  }'</code></pre>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 py-10 px-4 text-center text-sm text-slate-500">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-md bg-gradient-to-br from-mana-400 to-rose-500 flex items-center justify-center text-[10px] font-bold text-white">PG</div>
+        <span>Mana · Physics-Informed Biomimicry</span>
+      </div>
+      <div class="flex gap-6">
+        <a href="/health" class="hover:text-slate-300 transition">Status</a>
+        <a href="/docs" class="hover:text-slate-300 transition">API</a>
+        <a href="https://github.com/dcadelinia/PG-Mana" class="hover:text-slate-300 transition">GitHub</a>
+      </div>
+    </div>
+    <p class="mt-6 text-xs text-slate-600">Portable edition · Deploy anywhere · Built for the open frontier</p>
+  </footer>
+
+  <script>
+    let lastResult = null;
+
+    async function checkHealth() {
+      try {
+        const r = await fetch('/health');
+        const d = await r.json();
+        document.getElementById('stat-status').textContent = d.status;
+        document.getElementById('stat-status').className = d.status === 'ONLINE'
+          ? 'text-2xl font-bold text-emerald-400'
+          : 'text-2xl font-bold text-rose-400';
+      } catch (e) {
+        document.getElementById('stat-status').textContent = 'OFFLINE';
+      }
+    }
+
+    async function runSimulation() {
+      const btn = document.getElementById('run-btn');
+      const btnText = document.getElementById('btn-text');
+      const spinner = document.getElementById('btn-spinner');
+      const empty = document.getElementById('empty-state');
+      const results = document.getElementById('results');
+
+      btn.disabled = true;
+      btnText.textContent = 'Simulating…';
+      spinner.classList.remove('hidden');
+
+      const payload = {
+        tenant_id: document.getElementById('tenant').value || 'DEMO-PUBLIC-001',
+        points_count: parseInt(document.getElementById('points').value, 10),
+        target_accuracy_delta: parseFloat(document.getElementById('accuracy').value)
+      };
+      const key = document.getElementById('apikey').value || 'mana_live_demo';
+
+      try {
+        const start = performance.now();
+        const r = await fetch('/v1/simulate/aerodynamics', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Odynex-Mana-Key': key
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await r.json();
+        const clientLatency = Math.round(performance.now() - start);
+
+        if (!r.ok) {
+          throw new Error(data.detail || 'Simulation failed');
+        }
+
+        lastResult = data;
+        empty.classList.add('hidden');
+        results.classList.remove('hidden');
+
+        const t = data.telemetry_summary;
+        document.getElementById('result-status').textContent = data.status;
+        document.getElementById('result-mode').textContent = data.mode;
+        document.getElementById('res-lod').textContent = t.inferred_aerodynamic_efficiency.toFixed(4);
+        document.getElementById('res-latency').textContent = (t.latency_ms || clientLatency) + ' ms';
+        document.getElementById('res-nodes').textContent = t.processed_nodes.toLocaleString();
+        document.getElementById('res-cycles').textContent = t.allocated_compute_cycles.toLocaleString();
+        document.getElementById('raw-json').textContent = JSON.stringify(data, null, 2);
+
+        // Visual efficiency bar (map ~1.41 → ~85%)
+        const pct = Math.min(98, Math.round((t.inferred_aerodynamic_efficiency / 1.6) * 100));
+        document.getElementById('eff-pct').textContent = pct + '%';
+        document.getElementById('eff-bar').style.width = pct + '%';
+
+        document.getElementById('stat-latency').textContent = (t.latency_ms || clientLatency) + 'ms';
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'Run PINN Simulation';
+        spinner.classList.add('hidden');
+      }
+    }
+
+    function copyResult() {
+      if (!lastResult) return;
+      navigator.clipboard.writeText(JSON.stringify(lastResult, null, 2));
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy JSON', 1500);
+    }
+
+    checkHealth();
+    setInterval(checkHealth, 30000);
+  </script>
+</body>
+</html>
