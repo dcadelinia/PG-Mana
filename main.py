@@ -119,3 +119,8 @@ async def simulate_aerodynamics(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=PORT,reload=True)
+# Add this import to the top of main.py
+import checkout
+
+# Add this line right after your app = FastAPI(...) instantiation
+app.include_router(checkout.router)
